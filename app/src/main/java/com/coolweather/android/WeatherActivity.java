@@ -1,5 +1,6 @@
 package com.coolweather.android;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.coolweather.android.gson.Forecast;
 import com.coolweather.android.gson.Weather;
+import com.coolweather.android.service.AutoUpdate;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
 
@@ -34,11 +36,11 @@ import okhttp3.Response;
 
 public class WeatherActivity extends AppCompatActivity {
 
+    private Button navButton;
     public DrawerLayout drawerLayout;
     public SwipeRefreshLayout swipeRefresh;
     private String mWeatherId;
     private ScrollView weatherLayout;
-    private Button navButton;
     private TextView titleCity;
     private TextView titleUpdateTime;
     private TextView degreeText;
@@ -59,6 +61,7 @@ public class WeatherActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         setContentView(R.layout.activity_weather);
+
         //控件初始化
         bingPicImg = (ImageView) findViewById(R.id.bing_pic_img);
         weatherLayout = (ScrollView) findViewById(R.id.weather_layout);
@@ -110,6 +113,7 @@ public class WeatherActivity extends AppCompatActivity {
             loadBingpic();
         }
     }
+
     //根据天气id请求城市天气信息
     public  void  requestWeather(final String weatherId){
         String weatherUrl = "http://guolin.tech/api/weather?cityid="+weatherId+"&key=bc0418b57b2d4918819d3974ac1285d9";
@@ -206,5 +210,7 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(this, AutoUpdate.class);
+        startService(intent);
     }
 }
